@@ -2,7 +2,7 @@ import requests
 from threading import Thread
 import matplotlib.pyplot as plt
 import pandas as pd
-#slf
+#slf2
 symbols = ['AAPL', 'GOOG', 'AMZN', 'TSLA']
 url_template = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={}&apikey={}&outputsize=full'
 api_key = 'EJZLFWYWDYSNARXL'
