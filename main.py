@@ -9,6 +9,7 @@ api_key = 'EJZLFWYWDYSNARXL'
 
 
 def get_data(symbol):
+    print(f'getting {symbol}')
     url = url_template.format(symbol, api_key)
     response = requests.get(url)
     data = response.json()['Time Series (Daily)']
@@ -52,7 +53,40 @@ def plot_stock_data(symbols):
     plt.show()
 
 
+def generate_statistics_report(input_file, output_file):
+    data = pd.read_csv(input_file)
+    statistics = data.describe()
+    statistics.to_csv(output_file)
+
+
+def visualize_statistics_report(input_file):
+    # Загрузка данных из CSV файла в DataFrame
+    data = pd.read_csv(input_file, index_col=0)
+
+    # Удаление столбца "count", так как он не представляет интерес для визуализации
+    data = data.drop("count")
+
+    # Создание сетки графиков
+    fig, axes = plt.subplots(nrows=len(data.columns), figsize=(10, 6 * len(data.columns)))
+
+    # Построение графиков для каждой характеристики
+    for i, column in enumerate(data.columns):
+        axes[i].bar(data.index, data[column])
+        axes[i].set_title(f"Статистическая характеристика: {column}")
+        axes[i].set_xlabel('Характеристика')
+        axes[i].set_ylabel('Значение')
+
+    # Размещение графиков в сетке
+    plt.tight_layout()
+
+    # Отображение окна с графиками
+    plt.show()
+
+
+visualize_statistics_report('{}_data_report.csv'.format(symbols[0]))
+
 for symbol in symbols:
+    generate_statistics_report(symbol+'.csv', '{}_data_report.csv'.format(symbol))
     t = Thread(target=get_data(symbol))
     t.start()
 
